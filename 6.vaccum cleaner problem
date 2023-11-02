@@ -1,0 +1,55 @@
+import random
+
+# Define the grid size and the initial state
+grid_size = 5
+initial_state = [(i, j) for i in range(grid_size) for j in range(grid_size)]
+random.shuffle(initial_state)
+dirty_cells = initial_state[:grid_size]
+
+# Define the vacuum cleaner agent
+class VacuumCleaner:
+    def __init__(self):
+        self.position = (0, 0)
+
+    def move(self, new_position):
+        self.position = new_position
+
+    def clean(self, cell):
+        dirty_cells.remove(cell)
+
+# Define a function to visualize the grid
+def visualize_grid(agent):
+    grid = [["D" if (i, j) in dirty_cells else "C" for j in range(grid_size)] for i in range(grid_size)]
+    x, y = agent.position
+    grid[x][y] = "A"  # A represents the vacuum cleaner agent
+
+    for row in grid:
+        print(" ".join(row))
+    print()
+
+# Define the vacuum cleaner problem-solving function
+def vacuum_cleaner_problem(agent, dirty_cells):
+    while dirty_cells:
+        visualize_grid(agent)
+        x, y = agent.position
+
+        if (x, y) in dirty_cells:
+            agent.clean((x, y))
+            dirty_cells.remove((x, y))
+
+        if x < grid_size - 1:
+            agent.move((x + 1, y))
+        else:
+            if y < grid_size - 1:
+                agent.move((x, y + 1))
+
+# Initialize the vacuum cleaner agent
+vacuum_agent = VacuumCleaner()
+
+# Solve the Vacuum Cleaner problem
+print("Initial grid:")
+visualize_grid(vacuum_agent)
+print("Cleaning process:")
+vacuum_cleaner_problem(vacuum_agent, dirty_cells)
+print("All cells cleaned!")
+
