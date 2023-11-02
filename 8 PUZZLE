@@ -1,0 +1,48 @@
+initial_state = [1, 2, 3, 4, 5, 6, 0, 7, 8]
+goal_state = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+
+# Define the possible moves (up, down, left, right)
+moves = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+def is_valid(x, y):
+    return 0 <= x < 3 and 0 <= y < 3
+
+def get_blank_position(state):
+    return state.index(0) // 3, state.index(0) % 3
+
+def print_state(state):
+    for i in range(3):
+        print(state[i * 3:i * 3 + 3])
+
+def solve_puzzle(initial_state, goal_state):
+    visited = set()
+    q = Queue()
+    q.put(initial_state)
+
+    while not q.empty():
+        current_state = q.get()
+        if current_state == goal_state:
+            print("Goal state found:")
+            print_state(current_state)
+            return
+
+        blank_x, blank_y = get_blank_position(current_state)
+
+        for dx, dy in moves:
+            new_x, new_y = blank_x + dx, blank_y + dy
+
+            if is_valid(new_x, new_y):
+                new_state = current_state[:]
+                new_blank_x, new_blank_y = blank_x + dx, blank_y + dy
+                new_blank_index = new_blank_x * 3 + new_blank_y
+
+                new_state[blank_x * 3 + blank_y], new_state[new_blank_index] = new_state[new_blank_index], new_state[blank_x * 3 + blank_y]
+
+                if tuple(new_state) not in visited:
+                    visited.add(tuple(new_state))
+                    q.put(new_state)
+
+    print("No solution found.")
+
+if _name_ == "_main_":
+    solve_puzzle(initial_state, goal_state)
