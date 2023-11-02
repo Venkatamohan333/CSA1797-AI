@@ -1,0 +1,61 @@
+from collections import deque
+
+# Define the initial and goal state
+initial_state = (3, 3, 1)  # (missionaries on the left, cannibals on the left, boat position)
+goal_state = (0, 0, 0)
+
+# Define the valid state checker function
+def is_valid_state(state):
+    m, c, b = state
+    return 0 <= m <= 3 and 0 <= c <= 3 and (m == 0 or m >= c) and (3 - m == 0 or 3 - m >= 3 - c)
+
+# Define the possible moves function
+def get_possible_moves(state):
+    m, c, b = state
+    possible_moves = []
+    
+    if b == 1:
+        for dm in range(3):
+            for dc in range(3):
+                if dm + dc >= 1 and dm + dc <= 2:
+                    new_state = (m - dm, c - dc, 0)
+                    if is_valid_state(new_state):
+                        possible_moves.append(new_state)
+    else:
+        for dm in range(3):
+            for dc in range(3):
+                if dm + dc >= 1 and dm + dc <= 2:
+                    new_state = (m + dm, c + dc, 1)
+                    if is_valid_state(new_state):
+                        possible_moves.append(new_state)
+    
+    return possible_moves
+
+# Define the breadth-first search algorithm
+def solve_missionaries_cannibals(initial_state, goal_state):
+    queue = deque([(initial_state, [])])
+    visited = set()
+
+    while queue:
+        current_state, path = queue.popleft()
+
+        if current_state == goal_state:
+            return path + [current_state]
+
+        visited.add(current_state)
+
+        for move in get_possible_moves(current_state):
+            if move not in visited:
+                queue.append((move, path + [current_state]))
+
+    return None
+
+# Solve the problem and print the solution
+solution = solve_missionaries_cannibals(initial_state, goal_state)
+if solution:
+    for i, state in enumerate(solution):
+        m, c, b = state
+        print(f"Step {i + 1}: ({m}, {c}, {'left' if b == 1 else 'right'})")
+else:
+    print("No solution found.")
+
