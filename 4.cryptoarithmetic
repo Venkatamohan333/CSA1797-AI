@@ -1,0 +1,22 @@
+ef solve_cryptarithmetic(puzzle):
+    words = puzzle.split()
+    unique_chars = set("".join(words))
+    if len(unique_chars) > 10:
+        print("Too many unique characters (more than 10) to assign digits.")
+        return
+
+    # Generate all possible digit permutations for unique characters
+    for perm in permutations("0123456789", len(unique_chars)):
+        digit_mapping = dict(zip(unique_chars, perm))
+
+        if all(int("".join([digit_mapping[char] for char in word])) for word in words):
+            print("Solution found:")
+            for word in words:
+                print(f"{word}: {''.join([digit_mapping[char] for char in word])}")
+            return
+
+    print("No solution found.")
+    
+if _name_ == "_main_":
+    puzzle = "SEND + MORE = MONEY"  # Change the puzzle as needed
+    
