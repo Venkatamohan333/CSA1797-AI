@@ -1,0 +1,41 @@
+def map_coloring(countries, neighbors, colors):
+    def is_valid_assignment(country, color, assignment):
+        for neighbor in neighbors[country]:
+            if neighbor in assignment and assignment[neighbor] == color:
+                return False
+        return True
+
+    def backtrack(assignment):
+        if len(assignment) == len(countries):
+            return assignment
+
+        unassigned_countries = [country for country in countries if country not in assignment]
+        unassigned_country = unassigned_countries[0]
+
+        for color in colors:
+            if is_valid_assignment(unassigned_country, color, assignment):
+                assignment[unassigned_country] = color
+                result = backtrack(assignment)
+                if result is not None:
+                    return result
+                del assignment[unassigned_country]
+
+    return backtrack({})
+
+if __name__ == "__main__":
+    countries = ["A", "B", "C", "D"]
+    neighbors = {
+        "A": ["B", "C"],
+        "B": ["A", "C", "D"],
+        "C": ["A", "B", "D"],
+        "D": ["B", "C"]
+    }
+    colors = ["Red", "Green", "Blue"]
+
+    solution = map_coloring(countries, neighbors, colors)
+
+    if solution:
+        for country, color in solution.items():
+            print(f"{country}: {color}")
+    else:
+        print("No solution found.")
